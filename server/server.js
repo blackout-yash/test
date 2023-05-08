@@ -1,5 +1,6 @@
 import express from "express";
 import cookies from "cookie-parser";
+import session from "cookie-session";
 import cors from "cors";
 
 const app = express();
@@ -11,39 +12,48 @@ app.use(cors({
     methods: ["GET", "POST", "PUT", "DELETE"]
 }));
 
-// app.use(function (req, res, next) {
-//     if (req.headers.origin) res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
-//     else res.setHeader('Access-Control-Allow-Origin', "*");
-//     res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//     res.setHeader('Access-Control-Allow-Credentials', 'true');
-//     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
-//     next();
-// });
+app.use(session({
+    secret: "process.env.SESSION_SECRET",
+    resave: false,
+    saveUninitialized: true,
+    proxy: true,
+    cookie: {
+        secure: process.env.NODE_ENV === "development" ? false : true,
+        httpOnly: process.env.NODE_ENV === "development" ? false : true,
+        sameSite: process.env.NODE_ENV === "development" ? false : "none",
+    }
+}));
 
 app.get("/", (req, res, next) => {
-    res.cookie("connect.sid", "token", {
-        expires: new Date(Date.now() + 128986400),
-        httpOnly: true,
-        sameSite: 'none',
-        secure: true
-    });
+    // res.cookie("connect.sid", "token", {
+    //     expires: new Date(Date.now() + 128986400),
+    //     httpOnly: true,
+    //     sameSite: 'none',
+    //     secure: true
+    // });
 
-    res.json({
-        message: "cookie stored"
-    })
+    // res.json({
+    //     message: "cookie stored"
+    // })
+
+    req.session.user = "hello";
+    res.redirect("http://localhost:3000");
 })
 
 app.get("/check", (req, res, next) => {
-    const token = req.cookies['connect.sid'];
-    if (token) {
-        res.json({
-            message: "token found"
-        })
-    } else {
-        res.json({
-            message: "token not found"
-        })
-    }
+    // const token = req.cookies['connect.sid'];
+    // if (token) {
+    //     res.json({
+    //         message: "token found"
+    //     })
+    // } else {
+    //     res.json({
+    //         message: "token not found"
+    //     })
+    // }
+    res.json({
+        message: req.session
+    })
 })
 
 app.get("/logout", (req, res) => {
