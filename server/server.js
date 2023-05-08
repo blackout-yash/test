@@ -13,15 +13,18 @@ app.use(cors({
 }));
 
 app.use(session({
-    secret: "process.env.SESSION_SECRET",
-    resave: false,
-    saveUninitialized: true,
-    proxy: true,
-    cookie: {
-        secure: process.env.NODE_ENV === "development" ? false : true,
-        httpOnly: process.env.NODE_ENV === "development" ? false : true,
-        sameSite: process.env.NODE_ENV === "development" ? false : "none",
-    }
+    // secret: "process.env.SESSION_SECRET",
+    // resave: false,
+    // saveUninitialized: true,
+    // proxy: true,
+    // cookie: {
+    //     secure: process.env.NODE_ENV === "development" ? false : true,
+    //     httpOnly: process.env.NODE_ENV === "development" ? false : true,
+    //     sameSite: process.env.NODE_ENV === "development" ? false : "none",
+    // }
+    secret: 'random string',
+    duration: 30 * 60 * 1000,
+    activeDuration: 5 * 60 * 1000
 }));
 
 app.get("/", (req, res, next) => {
@@ -37,6 +40,7 @@ app.get("/", (req, res, next) => {
     // })
 
     req.session.user = "hello";
+    console.log(req.session.user);
     res.redirect("http://localhost:3000");
 })
 

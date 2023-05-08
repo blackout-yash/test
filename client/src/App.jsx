@@ -4,8 +4,8 @@ import axios from "axios";
 
 
 function App() {
-  // const server = "https://testone-em6f.onrender.com";
-  const server = "http://localhost:2323";
+  const server = "https://testone-em6f.onrender.com";
+  // const server = "http://localhost:2323";
 
   const handle1 = async (e) => {
     e.preventDefault();
