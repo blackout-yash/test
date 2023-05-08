@@ -13,18 +13,15 @@ app.use(cors({
 }));
 
 app.use(session({
-    // secret: "process.env.SESSION_SECRET",
-    // resave: false,
-    // saveUninitialized: true,
-    // proxy: true,
-    // cookie: {
-    //     secure: process.env.NODE_ENV === "development" ? false : true,
-    //     httpOnly: process.env.NODE_ENV === "development" ? false : true,
-    //     sameSite: process.env.NODE_ENV === "development" ? false : "none",
-    // }
-    secret: 'random string',
-    duration: 30 * 60 * 1000,
-    activeDuration: 5 * 60 * 1000
+    secret: "process.env.SESSION_SECRET",
+    resave: false,
+    saveUninitialized: true,
+    proxy: true,
+    cookie: {
+        secure: process.env.NODE_ENV === "development" ? false : true,
+        httpOnly: process.env.NODE_ENV === "development" ? false : true,
+        sameSite: process.env.NODE_ENV === "development" ? false : "none",
+    }
 }));
 
 app.get("/", (req, res, next) => {
@@ -39,9 +36,17 @@ app.get("/", (req, res, next) => {
     //     message: "cookie stored"
     // })
 
-    req.session.user = "hello";
-    console.log(req.session.user);
-    res.redirect("http://localhost:3000");
+    req.session.userId = "yash";
+
+    // Save the session to the store
+    req.session.save((err) => {
+        if (err) {
+            console.log(error);
+        } else {
+            console.log(req.session.userId);
+            res.redirect("http://localhost:3000");
+        }
+    });
 })
 
 app.get("/check", (req, res, next) => {
@@ -56,7 +61,7 @@ app.get("/check", (req, res, next) => {
     //     })
     // }
     res.json({
-        message: req.session
+        message: req.session.userId
     })
 })
 
